@@ -39,7 +39,7 @@ class Portfolio:
         i = random.randint(0, len(self.all_tickers))
         ticker = self.all_tickers[i]
         if ticker in self.holdings:
-            self.all_tickers()
+            self.pick_stock()
         else:
             return self.holdings.append(ticker)
     def get_equity_data(self):
