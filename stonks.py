@@ -41,7 +41,7 @@ class Portfolio:
         if ticker in self.holdings:
             self.pick_stock()
         else:
-            return self.holdings.append(ticker)
+            self.holdings.append(ticker)
     def get_equity_data(self):
         md_request = MarketDataRequest(
             start_date='1 Jan 2016',
