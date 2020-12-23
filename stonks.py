@@ -19,7 +19,7 @@ def get_equity_data_example():
     
     df = market.fetch_market(md_request)
     print(df.tail(5))
-get_equity_data_example()
+#get_equity_data_example()
 
 
 def get_tickers(year=2016):
@@ -53,6 +53,7 @@ class Portfolio:
         df = self.market.fetch_market(md_request)
         return df
 
-p = Portfolio()
-print(p.holdings)
-print(p.get_equity_data().tail(5))
+if __name__ == "__main__":
+    p = Portfolio()
+    print(p.holdings)
+    print(p.get_equity_data().tail(5))
