@@ -3,6 +3,7 @@ from findatapy.util import SwimPool; SwimPool()
 
 import csv
 import random
+import pandas as pd
 from pprint import pprint
 from findatapy.market import Market, MarketDataRequest, MarketDataGenerator
 
@@ -33,6 +34,7 @@ class Portfolio:
     market = Market(market_data_generator=MarketDataGenerator())
     def __init__(self, num=5):
         self.holdings = []
+        self.equity_data = None
         for x in range(num):
             self.pick_stock()
     def pick_stock(self):
@@ -43,14 +45,22 @@ class Portfolio:
         else:
             self.holdings.append(ticker)
     def get_equity_data(self):
-        md_request = MarketDataRequest(
-            start_date='1 Jan 2016',
-            data_source='yahoo',
-            vendor_tickers=self.holdings,
-            vendor_fields=['Close']
-        )
-
-        df = self.market.fetch_market(md_request)
+        if self.equity_data is None:
+            md_request = MarketDataRequest(
+                start_date='1 Jan 2016',
+                data_source='yahoo',
+                vendor_tickers=self.holdings,
+                vendor_fields=['Close'])
+            self.equity_data = self.market.fetch_market(md_request)
+        return self.equity_data
+    def get_returns_data(self):
+        equity_data = self.get_equity_data()
+        df = pd.DataFrame()
+        for ticker, values in equity_data.iteritems():
+            ticker = ticker.split(".")[0]
+            v_f = values
+            v_i = values.shift(periods=1)
+            df[f'{ticker}.returns'] = (v_f - v_i) / v_i
         return df
 
 if __name__ == "__main__":
