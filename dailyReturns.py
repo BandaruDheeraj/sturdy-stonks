@@ -13,8 +13,16 @@ def get_returns_data(df):
 # df = pd.read_pickle("portfolioReturns/portfolio1Returns.pkl")
 # that breaks my computer so imma just use a random one for now
 df = Portfolio().get_equity_data()
-print(df, "\n", get_returns_data(df))
+# print(df, "\n", get_returns_data(df))
 
 # also implemented within Portfolio class
 p = Portfolio()
-print(p.get_equity_data(), "\n", p.get_returns_data())
+# print(p.get_equity_data(), "\n", p.get_returns_data())
+
+
+for p in range(1,100):
+    returnsName = "portfolio"+str(p)+"Returns.pkl"
+    outputName = "portfolio"+str(p)+"DailyPercentChange.pkl"
+    dailyReturns = pd.read_pickle('portfolioReturns/' + returnsName)
+    get_returns_data(dailyReturns).to_pickle(outputName)
+
