@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from empyrical import max_drawdown, alpha_beta, sharpe_ratio, tail_ratio, omega_ratio
+from empyrical import max_drawdown, alpha_beta, sharpe_ratio, tail_ratio, omega_ratio,calmar_ratio
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -12,6 +12,8 @@ bestTail = 0
 highestTailRatio = float('inf')
 bestOmega = 0
 highestOmegaRatio = float('inf') * -1
+bestCalmar = 0
+highestCalmarRatio = float('inf') * -1
 
 for i in range(1,100):
     returnsName = "portfolio"+str(i)+"DailyPercentChange.pkl"
@@ -22,7 +24,15 @@ for i in range(1,100):
     drawDown = max_drawdown(returns).mean()
     sharpe = sharpe_ratio(returns).mean() # risk free = 0, period = daily
     tail = tail_ratio(returns).mean()
-    # omega = omega_ratio(returns)
+    # omega = omega_ratio(returns) #Error calculating omega
+
+
+    keyList = list(returns.columns.values)
+    calmar = 0.0
+    for j in keyList:
+        calmar += calmar_ratio(returns[j], period='weekly')
+    calmar = calmar / len(keyList)
+
     # calculate the max drawdown
     if  drawDown > lowestDrawdown:
         bestDrawdown = i
@@ -42,6 +52,11 @@ for i in range(1,100):
     # if omega > highestOmegaRatio:
     #     bestOmega = i
     #     highestOmegaRatio = omega
+
+    # calculate the calmar ratio (Used by investment funds) 
+    if calmar > highestCalmarRatio:
+        bestCalmar = i
+        highestCalmarRatio = calmar
     
 
 
@@ -55,12 +70,12 @@ print(bestSharpe)
 print(highestTailRatio)
 print(bestTail)
 
-print(highestOmegaRatio)
-print(bestOmega)
+print(highestCalmarRatio)
+print(bestCalmar)
 
 
 
-bestPortHoldings = "portfolio"+str(bestSharpe)+"DailyPercentChange.pkl"
+bestPortHoldings = "portfolio"+str(bestCalmar)+"DailyPercentChange.pkl"
 bestPortHoldings = pd.read_pickle(bestPortHoldings)
 print(bestPortHoldings)
 
