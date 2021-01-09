@@ -23,10 +23,13 @@ def get_equity_data_example():
 #get_equity_data_example()
 
 
-def get_tickers(year=2016):
+def get_tickers(year=2016, minCap=0):
     reader = csv.reader(open("nasdaq_screener_1608613054944.csv"))
     next(reader)
-    stocks = [line[0].strip() for line in reader if all(punc not in line[0] for punc in ['.','/']) and (line[7] and int(line[7]) < year)]
+    if minCap:
+        stocks = [line[0].strip() for line in reader if all(punc not in line[0] for punc in ['.','/']) and (line[7] and int(line[7]) < year) and (line[5] and int(line[5]) >= minCap)]
+    else:
+        stocks = [line[0].strip() for line in reader if all(punc not in line[0] for punc in ['.','/']) and (line[7] and int(line[7]) < year)]
     return stocks
 
 class Portfolio:
